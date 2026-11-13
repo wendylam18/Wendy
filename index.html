@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-HK" style="--bg:#14131A;--card:#1E1C27;--ink:#F3EEE2;--muted:#A8A194;--line:#34313F;--need:#8FA3FF;--want:#FF8FB1;--future:#E3B65B;--need-bg:#232A4A;--want-bg:#3F2433;--future-bg:#3A3220;--glow1:rgba(227,182,91,.14);--glow2:rgba(143,163,255,.12);--glow3:rgba(255,143,177,.10);--panel1:#2B2540;--panel2:#43365E;--on-panel:#F7F1E3;--on-accent:#1A1408;--shadow:0 10px 30px -12px rgba(0,0,0,.6);color-scheme:dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>底氣預算表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Noto+Serif+HK:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F3F8; --card:#FFFFFF; --ink:#231B2E; --muted:#6D6379; --line:#E4DFEB;
+  --need:#3B4BA8; --want:#D6457A; --future:#0E7C6B;
+  --need-bg:#E9ECFA; --want-bg:#FBE8EF; --future-bg:#DDF2EE;
+  --font:"Noto Sans HK","PingFang HK","Microsoft JhengHei",sans-serif;
+  --panel1:#231B2E; --panel2:#3B2A5A; --on-panel:#FFFFFF; --on-accent:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16121C; --card:#201A29; --ink:#F1ECF7; --muted:#A99FB8; --line:#383046;
+    --need:#8E9BFF; --want:#FF86AE; --future:#4FD1BC;
+    --need-bg:#262B4D; --want-bg:#4A2536; --future-bg:#173F39; color-scheme:dark;
+    --panel1:#2E2640; --panel2:#4A3A70; --on-accent:#0B1F1B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16121C; --card:#201A29; --ink:#F1ECF7; --muted:#A99FB8; --line:#383046;
+  --need:#8E9BFF; --want:#FF86AE; --future:#4FD1BC;
+  --need-bg:#262B4D; --want-bg:#4A2536; --future-bg:#173F39; color-scheme:dark;
+  --panel1:#2E2640; --panel2:#4A3A70; --on-accent:#0B1F1B;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;padding-bottom:120px}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+header{padding:32px 0 8px}
+.tag{display:inline-block;font-size:13px;font-weight:700;color:var(--future);background:var(--future-bg);padding:2px 10px;border-radius:99px}
+h1{font-size:34px;line-height:1.2;margin:10px 0 8px;font-weight:900;text-wrap:balance}
+header p{margin:0;color:var(--muted);text-wrap:balance}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
+button{font:inherit;cursor:pointer}
+.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);padding:8px 14px;border-radius:10px;font-size:14px}
+.ghost:hover{border-color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--need);outline-offset:2px}
+.income{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:12px}
+.part{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:16px;overflow:hidden}
+.part-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--c-bg)}
+.part-h h2{margin:0;font-size:18px;font-weight:900;color:var(--c)}
+.part-h small{display:block;color:var(--muted);font-size:13px}
+.part-sub{font-weight:900;font-size:20px;color:var(--c);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rows{padding:6px 16px 10px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border-bottom:0}
+.lab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.lab label{font-size:15px;font-weight:500}
+.lab small{color:var(--muted);font-size:12px;line-height:1.4}
+.typ{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px;padding:7px 10px;border-radius:8px;margin-top:4px}
+.addwrap{padding:0 16px 14px}
+.grp{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:6px 10px;border-radius:8px;background:var(--c-bg);color:var(--c);font-size:14px;font-variant-numeric:tabular-nums}
+.row.sub{padding-left:10px;border-left:3px solid var(--c-bg)}
+.x{background:transparent;border:0;color:var(--muted);font-size:22px;line-height:1;padding:4px 8px;border-radius:8px}
+.x:hover{color:var(--want)}
+.amt{display:flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--bg);width:140px}
+.amt span{color:var(--muted);font-size:14px}
+.amt input{border:0;background:transparent;color:var(--ink);font:inherit;width:100%;padding:9px 0;text-align:right;font-variant-numeric:tabular-nums;outline:none}
+.amt:focus-within{border-color:var(--c)}
+.need{--c:var(--need);--c-bg:var(--need-bg)}
+.want{--c:var(--want);--c-bg:var(--want-bg)}
+.future{--c:var(--future);--c-bg:var(--future-bg)}
+.result{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:16px;padding:18px 16px}
+.result h2{margin:0 0 4px;font-size:18px}
+.big{font-size:40px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.2}
+.bar{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--line);margin:14px 0 10px}
+.bar i{display:block;height:100%;transition:width .25s}
+.legend{display:grid;gap:6px;font-size:14px}
+.legend div{display:flex;justify-content:space-between;gap:8px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.note{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:var(--bg);font-size:14px}
+.share{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:16px;padding:16px}
+.share h2{margin:0 0 4px;font-size:17px}
+.share p{margin:0 0 12px;color:var(--muted);font-size:14px}
+.field{display:block;margin-bottom:10px}
+.field input[type=text]{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;padding:10px 12px;border-radius:10px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin:6px 0 12px}
+.chk input{margin-top:4px;width:18px;height:18px}
+.primary{width:100%;background:var(--future);color:var(--on-accent);border:0;padding:13px;border-radius:12px;font-weight:700;font-size:16px}
+.primary:disabled{opacity:.5;cursor:not-allowed}
+.msg{margin-top:10px;font-size:14px;min-height:20px}
+footer{color:var(--muted);font-size:12px;text-align:center;margin:24px 0 0}
+.sticky{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.sticky .in{max-width:560px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sticky b{font-size:24px;font-variant-numeric:tabular-nums}
+.sticky span{font-size:13px;color:var(--muted)}
+:root{--serif:"Noto Serif HK","Songti TC","PMingLiU",serif;--shadow:0 10px 30px -12px rgba(60,40,90,.25);--glow1:rgba(214,69,122,.16);--glow2:rgba(14,124,107,.16);--glow3:rgba(59,75,168,.14)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--shadow:0 10px 30px -12px rgba(0,0,0,.6)}}
+:root[data-theme="dark"]{--shadow:0 10px 30px -12px rgba(0,0,0,.6)}
+body{background:
+  radial-gradient(520px 320px at 90% -40px,var(--glow1),transparent 70%),
+  radial-gradient(460px 300px at -10% 180px,var(--glow2),transparent 70%),
+  radial-gradient(500px 300px at 100% 620px,var(--glow3),transparent 70%),
+  var(--bg);background-repeat:no-repeat}
+header{padding:40px 0 10px}
+.tag{letter-spacing:.12em;padding:4px 14px;font-size:12px}
+h1{font-family:var(--serif);font-size:38px;font-weight:900;letter-spacing:-.01em}
+h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--want-bg) 62%);padding:0 2px}
+header p{font-size:15px}
+.ghost{border-radius:99px;padding:9px 18px;background:var(--card);box-shadow:var(--shadow)}
+.income,.part,.result,.share{border:0;border-radius:22px;box-shadow:var(--shadow)}
+.income{padding:16px 18px}
+.part{margin-top:20px}
+.part-h{align-items:center;padding:16px 18px;border-bottom:3px solid var(--c)}
+.part-h>.ptxt{flex:1;min-width:0}
+.ico{flex:none;width:42px;height:42px;border-radius:14px;background:var(--c);color:var(--card);display:grid;place-items:center}
+.ico svg{width:22px;height:22px}
+.part-h h2{font-family:var(--serif);font-size:19px}
+.part-sub{font-family:var(--serif);font-size:24px}
+.amt{border-radius:12px;background:var(--bg)}
+.amt:focus-within{box-shadow:0 0 0 3px var(--c-bg)}
+.result{padding:22px 18px;margin-top:20px}
+.result h2{font-size:14px;color:var(--muted);font-weight:500;margin-bottom:0}
+.big{font-family:var(--serif);font-size:48px;letter-spacing:-.02em}
+.rwrap{display:flex;align-items:center;gap:18px;margin-top:14px;flex-wrap:wrap}
+.donut{width:132px;height:132px;flex:none;transform:rotate(-90deg)}
+.donut circle{fill:none;stroke-width:14;transition:stroke-dasharray .35s,stroke-dashoffset .35s}
+.donut .track{stroke:var(--line)}
+.rwrap .legend{flex:1;min-width:190px}
+.note{border-radius:14px;background:var(--future-bg);color:var(--ink);margin-top:16px}
+.primary{border-radius:99px;box-shadow:var(--shadow)}
+.sticky{border-radius:22px 22px 0 0;box-shadow:0 -10px 30px -14px rgba(60,40,90,.3);border:0}
+.sticky b{font-family:var(--serif);font-size:26px}
+@media (max-width:420px){h1{font-size:32px}.big{font-size:42px}}
+@media (prefers-reduced-motion: reduce){.donut circle{transition:none}}
+.reflect,.sumcard{margin-top:20px;background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:20px 18px}
+.reflect h2,.sumcard h2,.cta h2{font-family:var(--serif);font-size:21px;margin:0 0 6px;text-wrap:balance}
+.lead{margin:0 0 14px;color:var(--muted);font-size:14px}
+.rcard{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:10px;background:var(--bg)}
+.rcard b{display:block;font-size:16px}
+.rcard p{margin:2px 0 10px;color:var(--muted);font-size:13px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 14px;font-size:14px}
+.pill[aria-pressed="true"].ok{background:var(--future);border-color:var(--future);color:var(--on-accent)}
+.pill[aria-pressed="true"].mid{background:#C98A12;border-color:#C98A12;color:var(--on-accent)}
+.pill[aria-pressed="true"].no{background:var(--want);border-color:var(--want);color:var(--on-accent)}
+.sumcard ul{margin:8px 0 14px;padding-left:20px;display:grid;gap:8px;font-size:15px}
+.sumcard .empty{color:var(--muted);font-size:14px}
+.sumcard .close{margin:0 0 14px;padding:12px 14px;border-radius:14px;background:var(--need-bg);font-weight:700;font-size:15px}
+#prev{display:block;max-width:100%;border-radius:14px;margin-top:12px}
+.cta{margin-top:20px;border-radius:22px;padding:24px 20px;background:linear-gradient(135deg,var(--panel1),var(--panel2));color:var(--on-panel);box-shadow:var(--shadow)}
+.cta h2{color:var(--on-panel);font-size:24px}
+.cta p{margin:0 0 16px;font-size:15px;opacity:.9}
+.ctabtns{display:flex;gap:10px;flex-wrap:wrap}
+.ctabtns a,.ctabtns span{display:inline-block;padding:11px 20px;border-radius:99px;font-weight:700;font-size:15px;text-decoration:none}
+.ctabtns a{background:var(--want);color:var(--on-accent)}
+.ctabtns span,.ctabtns a.alt{border:1px solid currentColor;background:transparent;color:inherit}
+.verdict{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,var(--panel1),var(--panel2));color:var(--on-panel);border-radius:20px;padding:18px;margin:10px 0 14px}
+.score{flex:none;text-align:center;min-width:86px}
+.score b{display:block;font-family:var(--serif);font-size:54px;line-height:1;font-weight:900}
+.score span{font-size:11px;opacity:.75}
+.verdict h3{margin:0 0 4px;font-family:var(--serif);font-size:19px;line-height:1.3;text-wrap:balance}
+.verdict p{margin:0;font-size:13.5px;opacity:.88}
+.tiles{display:grid;gap:10px}
+.tile{border-radius:16px;padding:12px 14px;background:var(--c-bg)}
+.tile.need{--c:var(--need);--c-bg:var(--need-bg)}.tile.want{--c:var(--want);--c-bg:var(--want-bg)}.tile.future{--c:var(--future);--c-bg:var(--future-bg)}
+.tl{display:flex;justify-content:space-between;color:var(--c);font-weight:900}
+.tl b{font-family:var(--serif);font-size:20px}
+.tm{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tile p{margin:6px 0 0;font-size:14px;font-weight:500}
+.review{margin-top:14px;border:2px solid var(--ink);border-radius:18px;padding:14px}
+.review h4{margin:0 0 8px;font-family:var(--serif);font-size:17px}
+.rv{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line);font-size:14.5px}
+.rv:first-of-type{border-top:0}
+.rv em{flex:none;font-style:normal;font-weight:900;font-size:12px;color:var(--on-accent);padding:3px 10px;border-radius:99px;margin-top:2px}
+.rv.ok em{background:var(--future)}.rv.no em{background:var(--want)}.rv.go em{background:#C98A12}
+.rv span{font-weight:500}
+.small{font-size:13px;color:var(--muted);margin:10px 0 0}
+.profile{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:18px;margin-top:20px}
+.profile h2{font-family:var(--serif);font-size:18px;margin:0}
+.profile p{margin:2px 0 12px;color:var(--muted);font-size:13px}
+.pf{display:grid;grid-template-columns:1fr 90px;gap:10px}
+.pf .field{margin:0;font-size:13px;color:var(--muted)}
+.pf .wide{grid-column:1/-1}
+.pf input{width:100%;margin-top:4px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;padding:10px 12px;border-radius:10px}
+.pf input.bad{border-color:var(--want);box-shadow:0 0 0 3px var(--want-bg)}
+.who{font-size:14px;color:var(--muted);margin:4px 0 0}
+.who b{color:var(--ink)}
+.profile .income{border:1px solid var(--line);box-shadow:none;border-radius:14px;margin-top:12px;padding:12px 14px}
+.love{margin:0 0 14px;padding:16px;border-radius:18px;background:linear-gradient(135deg,var(--want-bg),var(--need-bg))}
+.love h4{margin:0 0 6px;font-family:var(--serif);font-size:17px}
+.love p{margin:6px 0 0;font-size:14.5px;font-weight:500}
+.love .lc{font-weight:900;margin-top:10px}
+.warn{margin:0 0 14px;border:2px solid var(--want);background:var(--want-bg);border-radius:18px;padding:14px}
+.warn h4{margin:0 0 8px;font-family:var(--serif);font-size:17px;color:var(--want)}
+.wi{display:grid;gap:2px;padding:8px 0;border-top:1px dashed var(--want)}
+.wi:first-of-type{border-top:0}
+.wi b{font-size:15px}
+.wi span{font-size:13.5px}
+.okbar{margin:0 0 14px;padding:10px 14px;border-radius:14px;background:var(--future-bg);font-size:14px;font-weight:500}
+.sumcta{margin:14px 0;padding:16px;border-radius:18px;background:linear-gradient(135deg,var(--panel1),var(--panel2));color:var(--on-panel);display:grid;gap:6px}
+.sumcta b{font-family:var(--serif);font-size:17px}
+.sumcta span{font-size:14px;opacity:.9}
+.sumcta a{justify-self:start;margin-top:6px;background:var(--want);color:var(--on-accent);text-decoration:none;font-weight:700;padding:10px 18px;border-radius:99px;font-size:14px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag">底氣預算表</span>
+  <h1>每個月，你<em>真正</em>使幾多？</h1>
+  <p>將每月開支分成「必需」「非必需」同「Future」三個 Part，逐筆填，總數同比例自動幫你計好。</p>
+  <div class="tools">
+    <button class="ghost" id="ex" type="button">睇 Wendy 嘅例子</button>
+    <button class="ghost" id="clr" type="button">清空重填</button>
+  </div>
+</header>
+
+<main>
+<section class="part need" aria-labelledby="h-need">
+  <div class="part-h"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div><div class="ptxt"><h2 id="h-need">Part 1　必需品</h2><small>生存＋工作工具＋健康盾牌，打風都唔甩</small></div><div class="part-sub" id="s-need">$0</div></div>
+  <div class="rows" id="r-need"></div>
+</section>
+<section class="part want" aria-labelledby="h-want">
+  <div class="part-h"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17v4M17 19h4"/></svg></div><div class="ptxt"><h2 id="h-want">Part 2　非必需</h2><small>純粹氹自己開心嘅開支</small></div><div class="part-sub" id="s-want">$0</div></div>
+  <div class="rows" id="r-want"></div>
+</section>
+<section class="part future" aria-labelledby="h-future">
+  <div class="part-h"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div><div class="ptxt"><h2 id="h-future">Part 3　Future 將來</h2><small>退休金、儲蓄投資，同投資自己、加埋技能</small></div><div class="part-sub" id="s-future">$0</div></div>
+  <div class="rows" id="r-future"></div>
+</section>
+
+<section class="result" aria-live="polite">
+  <h2>你每月總轉出</h2>
+  <div class="big" id="total">$0</div>
+  <div class="rwrap">
+    <svg class="donut" viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="track" cx="60" cy="60" r="48"/>
+      <circle id="d-need" cx="60" cy="60" r="48" stroke="var(--need)" stroke-dasharray="0 301.6"/>
+      <circle id="d-want" cx="60" cy="60" r="48" stroke="var(--want)" stroke-dasharray="0 301.6"/>
+      <circle id="d-future" cx="60" cy="60" r="48" stroke="var(--future)" stroke-dasharray="0 301.6"/>
+    </svg>
+    <div class="legend" id="legend"></div>
+  </div>
+  <p class="note" id="note">填落數字，就會見到你嘅比例。</p>
+</section>
+
+<section class="reflect" aria-labelledby="h-ref">
+  <h2 id="h-ref">睇完數字，問自己五條問題</h2>
+  <p class="lead">知道自己每月使幾多，先可以更加 manage 錢。固定開支之外，你有冇為自己將來打算？</p>
+  <div id="refl"></div>
+</section>
+
+<section class="profile">
+    <h2>最後，講下你自己</h2>
+    <p>填好之後，名同資料會出現喺你嘅 Summary 同下載圖上。收入唔填都得。</p>
+    <div class="pf">
+      <label class="field" for="pname">名<input type="text" id="pname" maxlength="20" autocomplete="off" placeholder="你嘅稱呼"></label>
+      <label class="field" for="page">歲數<input type="text" id="page" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="例如 32"></label>
+      <label class="field wide" for="pjob">工作<input type="text" id="pjob" maxlength="24" autocomplete="off" placeholder="例如 老師、設計師"></label>
+    </div>
+    <div class="income">
+    <div class="row" style="border:0;padding:0">
+      <label for="income">💰 每月收入（選填，用嚟計你嘅開支佔收入幾多 %）</label>
+      <div class="amt" style="--c:var(--need)"><span>$</span><input id="income" inputmode="numeric" placeholder="0"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sumcard" aria-labelledby="h-sum">
+  <h2 id="h-sum">你嘅 Summary</h2>
+  <div id="sumtxt"></div>
+  <button class="primary" id="dl" type="button">下載我嘅 Summary 圖</button>
+  <div class="msg" id="dmsg" role="status"></div>
+  <img id="prev" alt="你嘅理財 Summary 圖" hidden>
+</section>
+
+<section class="cta" aria-labelledby="h-cta">
+  <h2 id="h-cta">活得更有底氣</h2>
+  <p>如果有需要，歡迎 DM Wendy ✨ Follow 我嘅 IG，會知道更多理財保險嘅知識。</p>
+  <div class="ctabtns" id="ctabtns"></div>
+</section>
+
+
+<footer>只供個人理財參考，唔構成任何保險或投資建議。</footer>
+</main>
+</div>
+
+<div class="sticky"><div class="in"><span>每月總數</span><b id="total2">$0</b></div></div>
+
+<script>
+const PARTS={
+  need:[
+    ["住","21000","租金或供樓",0,"連雜費計"],
+    ["雜費","0","水電煤、管理費",0,""],
+    ["食","10000","",0,""],
+    ["電話費","3200","電話費、上網費",0,"連交通費計"],
+    ["寵物","2000","例如糧食、寵物保險",0,""],
+    ["運動","800","",0,""],
+    ["工具訂閱","400","例如 AI、VPN、雲端儲存",0,""],
+    ["個人保險","8000","每月保費",1,"連媽咪保險計"],
+    ["家人保險","0","每月保費",1,""]
+  ],
+  want:[
+    ["旅行","1250","每月平均預留",0,""],
+    ["理髮／造型","0","",0,"","扮靚"],
+    ["護膚品／化妝品","400","",0,"","扮靚"],
+    ["醫美","1600","",0,"","扮靚"],
+    ["買衫","800","",0,"","扮靚"]
+  ],
+  future:[
+    ["儲蓄","8000","退休金、為將來儲低嘅錢",0,"儲錢同投資合共 $8,000"],
+    ["投資","0","例如基金、強積金自願供款",0,""],
+    ["學習","6000","投資自己：報堂、課程、書、學新技能",0,""]
+  ]
+};
+const EMO={"住":"🏠","雜費":"💡","食":"🍜","電話費":"📱","寵物":"🐱","運動":"🏐","工具訂閱":"💻","個人保險":"🛡️","家人保險":"👨‍👩‍👧",
+  "旅行":"✈️","扮靚":"💅","理髮／造型":"💇","護膚品／化妝品":"🧴","醫美":"✨","買衫":"👗","儲蓄":"🐷","投資":"📈","學習":"📚"};
+const hints={};
+const groups={};
+const NAMES={need:"必需",want:"非必需",future:"Future"};
+const $=id=>document.getElementById(id);
+const fmt=n=>"$"+Math.round(n).toLocaleString("en-HK");
+const num=v=>{const n=parseFloat(String(v).replace(/[^\d.]/g,""));return isFinite(n)?n:0};
+const inputs={need:[],want:[],future:[]};
+const types={};
+const custom={need:[],want:[],future:[]};
+let cid=0;
+
+Object.keys(PARTS).forEach(k=>{
+  const box=$("r-"+k);
+  let lastGroup="";
+  PARTS[k].forEach(([label,,hint,hasType,,grp],i)=>{
+    if(grp&&grp!==lastGroup){
+      const g=document.createElement("div");g.className="grp";
+      g.innerHTML='<b></b><span></span>';g.firstChild.textContent=(EMO[grp]?EMO[grp]+" ":"")+grp;
+      groups[k+grp]={span:g.lastChild,k,grp};box.appendChild(g);
+    }
+    lastGroup=grp||"";
+    const row=document.createElement("div");row.className="row";
+    if(grp)row.classList.add("sub");
+    row.innerHTML='<div class="lab"><label for="'+k+i+'"></label><small></small>'+
+      (hasType?'<input class="typ" id="t-'+k+i+'" type="text" maxlength="30" aria-label="保障類型" placeholder="保障類型（例如醫療、危疾、人壽）">':'')+
+      '</div><div class="amt"><span>$</span><input id="'+k+i+'" inputmode="numeric" placeholder="0"></div>';
+    row.querySelector("label").textContent=(EMO[label]?EMO[label]+" ":"")+label;
+    hints[k+i]={el:row.querySelector("small"),hint};
+    setHint(k+i,"");
+    const inp=row.querySelector("#"+k+i);
+    inp.addEventListener("input",calc);
+    if(hasType)types[k+i]=row.querySelector("#t-"+k+i);
+    inputs[k].push(inp);box.appendChild(row);
+  });
+  const wrap=document.createElement("div");wrap.className="addwrap";
+  wrap.innerHTML='<button class="ghost" type="button">＋ 再加項目 🌈</button>';
+  wrap.firstChild.onclick=()=>addCustom(k,box);
+  box.parentNode.appendChild(wrap);
+});
+function setHint(key,note){
+  const h=hints[key],t=h.hint+(note?(h.hint?"，":"")+"Wendy 例子"+note:"");
+  h.el.textContent=t;h.el.hidden=!t;
+}
+function addCustom(k,box){
+  const n=++cid;
+  const row=document.createElement("div");row.className="row";
+  row.innerHTML='<div class="lab"><input class="typ" id="cn'+n+'" type="text" maxlength="30" aria-label="項目名稱" placeholder="🌟 項目名稱，由你揀"></div>'+
+    '<div class="amt"><span>$</span><input id="ca'+n+'" inputmode="numeric" placeholder="0" aria-label="金額"></div>'+
+    '<button class="x" type="button" aria-label="刪除呢項">×</button>';
+  const rec={name:row.querySelector("#cn"+n),amt:row.querySelector("#ca"+n),row};
+  rec.amt.addEventListener("input",calc);
+  row.querySelector(".x").onclick=()=>{row.remove();custom[k]=custom[k].filter(r=>r!==rec);calc()};
+  custom[k].push(rec);box.appendChild(row);rec.name.focus();
+  return rec;
+}
+$("income").addEventListener("input",calc);
+
+function sums(){
+  const s={};Object.keys(inputs).forEach(k=>s[k]=inputs[k].reduce((a,i)=>a+num(i.value),0)+custom[k].reduce((a,r)=>a+num(r.amt.value),0));
+  s.total=s.need+s.want+s.future;return s;
+}
+function calc(){
+  const s=sums(),inc=num($("income").value);
+  ["need","want","future"].forEach(k=>{
+    $("s-"+k).textContent=fmt(s[k]);
+  });
+  const C=301.6;let start=0;
+  ["need","want","future"].forEach(k=>{
+    const len=s.total?s[k]/s.total*C:0,el=$("d-"+k);
+    el.setAttribute("stroke-dasharray",len+" "+(C-len));
+    el.setAttribute("stroke-dashoffset",-start);start+=len;
+  });
+  Object.values(groups).forEach(g=>{
+    const sum=PARTS[g.k].reduce((a,e,i)=>a+(e[5]===g.grp?num(inputs[g.k][i].value):0),0);
+    g.span.textContent=fmt(sum);
+  });
+  $("total").textContent=fmt(s.total);$("total2").textContent=fmt(s.total);
+  $("legend").innerHTML=["need","want","future"].map(k=>{
+    const p=s.total?Math.round(s[k]/s.total*100):0;
+    const ip=inc?"（佔收入 "+Math.round(s[k]/inc*100)+"%）":"";
+    return '<div><span><i class="dot" style="background:var(--'+k+')"></i>'+NAMES[k]+'</span><span>'+fmt(s[k])+" · "+p+"%"+ip+"</span></div>";
+  }).join("");
+  let t="填落數字，就會見到你嘅比例。";
+  if(s.total>0){
+    const fp=s.future/s.total*100,wp=s.want/s.total*100;
+    t=fp>=20?"Future 佔咗 "+Math.round(fp)+"%，你已經有為將來預留，做得好！":"Future 暫時佔 "+Math.round(fp)+"%，慢慢加一啲，底氣會越嚟越足。";
+    if(wp>30)t+=" 非必需佔 "+Math.round(wp)+"%，有空睇下邊啲其實可以調整。";
+    if(inc){const left=inc-s.total;t+=left>=0?" 以你輸入嘅收入計，每月仲剩 "+fmt(left)+"。":" 你嘅開支高過收入 "+fmt(-left)+"，值得停一停檢視下。";}
+  }
+  $("note").textContent=t;
+  if(typeof renderSummary==="function")renderSummary(s,inc);
+}
+function clearAll(){
+  Object.keys(inputs).forEach(k=>{inputs[k].forEach(i=>i.value="");custom[k].forEach(r=>r.row.remove());custom[k]=[]});
+  Object.values(types).forEach(t=>t.value="");$("income").value="";
+  Object.keys(hints).forEach(key=>setHint(key,""));
+  if(typeof resetRefl==="function")resetRefl();
+}
+$("ex").onclick=()=>{
+  clearAll();
+  Object.keys(PARTS).forEach(k=>PARTS[k].forEach(([,v,,,note],i)=>{
+    inputs[k][i].value=v==="0"?"":v;
+    setHint(k+i,note?"："+note:"");
+  }));
+  calc();
+};
+$("clr").onclick=()=>{clearAll();calc()};
+const SKINS={midnight:{bg:"#14131A",card:"#1E1C27",ink:"#F3EEE2",muted:"#A8A194",line:"#34313F",need:"#8FA3FF",want:"#FF8FB1",future:"#E3B65B",needBg:"#232A4A",wantBg:"#3F2433",futureBg:"#3A3220",glow1:"rgba(227,182,91,.14)",glow2:"rgba(143,163,255,.12)",glow3:"rgba(255,143,177,.10)",panel1:"#2B2540",panel2:"#43365E",onPanel:"#F7F1E3",onAccent:"#1A1408",hot:"#FF8FB1",gold:"#E3B65B"}};
+const SKIN="midnight";
+const CONTACT={ig:"wenwenn57",wa:""};
+const val=(k,label)=>{const i=PARTS[k].findIndex(e=>e[0]===label);return i<0?0:num(inputs[k][i].value)};
+const LV=[["做到咗","ok","#0E7C6B"],["想加強","mid","#C98A12"],["未有","no","#D6457A"]];
+const REFL=[
+  {t:"固定開支之外，有冇為自己將來打算？",short:"為自己將來打算",e:"🌱",q:"有冇專登留一筆，俾 10 年、20 年後嘅自己？例如應急錢、置業、人生下一步。",auto:()=>val("future","儲蓄")+val("future","投資")>0},
+  {t:"有冇投資自己？",short:"投資自己",e:"🧠",q:"加埋學新技能：課程、書、新技能，你而家每月有冇投入？",auto:()=>val("future","學習")>0},
+  {t:"有冇做好退休準備？",short:"退休準備",e:"🌴",q:"到你唔再出糧嗰日，有冇穩定收入？強積金、年金、被動收入，你有冇計過退休後每月要使幾多？",auto:null},
+  {t:"你係先儲後使，定係使剩先儲？",short:"先儲後使",e:"🪙",opts:[["先儲後使","ok"],["使剩先儲","mid"],["冇儲","no"]],q:"出糧嗰日，你係先將一筆儲起，定係使完先睇剩幾多？",auto:null},
+  {t:"有冇幫自己同家人買好保險？",short:"自己同家人嘅保險",e:"🛡️",q:"醫療、危疾、人壽，保障夠唔夠？家人有冇份？",auto:()=>val("need","個人保險")+val("need","家人保險")>0}
+];
+const prof=()=>{const a=parseInt($("page").value,10);return {name:$("pname").value.trim(),age:isFinite(a)?a:0,job:$("pjob").value.trim()}};
+function profOK(){
+  const f=prof(),bad={pname:!f.name,page:!(f.age>=10&&f.age<=100),pjob:!f.job};
+  Object.keys(bad).forEach(id=>$(id).classList.toggle("bad",bad[id]));
+  return !Object.values(bad).some(Boolean);
+}
+["pname","page","pjob"].forEach(id=>$(id).addEventListener("input",()=>{$(id).classList.remove("bad");calc()}));
+const STATE=REFL.map(()=>null),touched=REFL.map(()=>false);
+const pillBtns=[];
+REFL.forEach((r,i)=>{
+  const c=document.createElement("div");c.className="rcard";
+  c.innerHTML='<b></b><p></p><div class="pills" role="group"></div>';
+  c.querySelector("b").textContent=r.e+" "+(i+1)+". "+r.t;
+  c.querySelector("p").textContent=r.q;r.el=c.querySelector("p");
+  c.querySelector(".pills").setAttribute("aria-label",r.t);
+  pillBtns[i]=(r.opts||LV).map(([name,cls],j)=>{
+    const b=document.createElement("button");b.type="button";b.className="pill "+cls;b.textContent=name;
+    b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{touched[i]=true;STATE[i]=j;paintRefl()};
+    c.querySelector(".pills").appendChild(b);return b;
+  });
+  $("refl").appendChild(c);
+});
+function paintRefl(){pillBtns.forEach((bs,i)=>bs.forEach((b,j)=>b.setAttribute("aria-pressed",String(STATE[i]===j))))}
+function resetRefl(){touched.fill(false);STATE.fill(null);paintRefl()}
+function pct(a,b){return b?Math.round(a/b*100):0}
+
+const GAPTIP=[
+  "為自己下一步預備一筆，應急錢、置業、人生目標，都要有底氣。",
+  "投資自己、學新技能，係回報最高嘅資產。",
+  "計下退休後每月要使幾多，強積金之外，仲要有自己嘅收入來源。",
+  "出糧第一件事，係先將一筆儲起，而唔係使剩先儲。",
+  "醫療、危疾、人壽，自己同家人都要有足夠保障。"
+];
+function analyse(s,inc){
+  const fp=pct(s.future,s.total),np=pct(s.need,s.total),wp=pct(s.want,s.total);
+  const score=Math.round(STATE.reduce((a,v)=>a+(v===0?1:v===1?.5:0),0)/REFL.length*100);
+  const warns=[];
+  if(val("need","個人保險")<=0)warns.push({t:"自己冇保險保障",d:"你填咗個人保險係 $0。如果真係冇，一旦病倒或者意外，醫療開支同收入中斷，全部要你自己扛。"});
+  if(val("need","家人保險")<=0)warns.push({t:"家人冇保險保障",d:"你填咗家人保險係 $0。如果有家人要照顧或者依賴你，一旦有事，成個家庭都會受影響。"});
+  if(val("future","儲蓄")+val("future","投資")<=0||STATE[2]===2)warns.push({t:"冇為退休儲蓄投資",d:"你冇為將來嘅退休儲蓄或者投資。如果冇其他退休安排，到時就可能冇足夠底氣。"});
+  const sc=warns.length?Math.min(score,87):score;
+  let verdict,sub;
+  if(sc>=90){verdict="底氣十足";sub="每個方面你都顧到，你已經行喺好多人前面。繼續保持，定期檢視就得。"}
+  else if(sc>=62){verdict="底氣唔錯，仲可以再企穩";sub="你已經有好基礎，只係差少少就更穩陣。補返最弱嗰一環，底氣即刻升級。"}
+  else if(sc>=37){verdict="底氣開始有，但仲有缺口";sub="你清楚自己使幾多，呢步最難亦最重要。而家要做嘅，係將缺口逐個補返。"}
+  else{verdict="底氣未夠，由今個月開始補";sub="唔緊要，睇清楚數字已經係第一步。重點係今個月就行動，唔好再拖。"}
+  const need=np>=75?"必需佔咗 "+np+"%，成個月幾乎都係維生。想有底氣，先睇邊啲固定支出可以優化。"
+    :np>=55?"必需 "+np+"%，屬正常水平。小心唔好再加固定開支，蠶食將來。"
+    :"必需得 "+np+"%，你有好大空間畀將來，要好好利用。";
+  const want=wp>25?"非必需 "+wp+"%（"+fmt(s.want)+"），問自己：邊樣真係令你開心？其餘嘅可以放過自己。"
+    :wp>=8?"非必需 "+wp+"%，有享受又有節制，啱啱好。"
+    :"非必需得 "+wp+"%，你好克制。記得偶爾 reward 自己，先走得長遠。";
+  const fut=fp>=20?"Future 佔 "+fp+"%，你每個月都喺度為退休同將來打工，繼續保持！"
+    :fp>=10?"Future "+fp+"%，已經起步。退休金同投資自己、學新技能，都值得繼續投入。"
+    :fp>0?"Future 得 "+fp+"%，主要係為今日生活。退休嗰日，只有你今日儲落嘅先係你嘅。"
+    :"Future 係 0，即係退休同將來，暫時未有你嘅預算。";
+  const strengths=[],gaps=[];
+  REFL.forEach((r,i)=>{if(STATE[i]===0)strengths.push(i);else if(STATE[i]===2||STATE[i]===1||(STATE[i]===null&&i===2))gaps.push(i)});
+  gaps.sort((x,y)=>(STATE[x]===1)-(STATE[y]===1));
+  const strongTxt=strengths.length?strengths.map(i=>REFL[i].short).join("、"):"你已經行出第一步：睇清楚自己每月使幾多";
+  const gapTxt=gaps.length?REFL[gaps[0]].short:"";
+  const gapTip=gaps.length?GAPTIP[gaps[0]]:"";
+  const next=warns.length?"有需要歡迎 DM Wendy，一齊睇點樣補返呢啲缺口。":gaps.length?gapTip:"同家人分享你嘅預算表，一齊規劃下一個十年。";
+  return {score,verdict,sub,need,want,fut,np,wp,fp,strongTxt,gapTxt,gapTip,next,warns,strengthN:strengths.length};
+}
+function love(A,pf){
+  const e=t=>String(t).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  const n=pf.name?e(pf.name):"";
+  const ps=[
+    (n?n+"，":"")+"你肯停低嚟，認真睇清楚自己每月使幾多，已經贏咗好多人 💛",
+    A.strengthN?"你喺「"+e(A.strongTxt)+"」做得好好，真心值得欣賞自己 ✨":"今日你已經踏出最難嘅第一步：面對自己嘅數字 ✨",
+    A.warns.length?"而家見到嘅缺口唔係失敗，只係溫柔提醒你：你值得被好好保護，慢慢補返就得 🌱":"你對自己同家人嘅保護同將來，都有用心，繼續保持 🌿"
+  ];
+  if(pf.age>=10&&pf.age<65)ps.push("距離 65 歲仲有 "+(65-pf.age)+" 年，你有足夠時間，一步一步建立自己嘅底氣。");
+  return '<div class="love"><h4>💌 俾'+(n||"你")+'</h4>'+ps.map(x=>"<p>"+x+"</p>").join("")+'<p class="lc">你已經好叻，繼續行，我哋一齊活得更有底氣 💪</p></div>';
+}
+function renderSummary(s,inc){
+  REFL.forEach((r,i)=>{if(!touched[i]){STATE[i]=(r.auto&&s.total>0)?(r.auto()?0:2):null}});
+  paintRefl();
+  const box=$("sumtxt");
+  if(!s.total){box.innerHTML='<p class="empty">填完上面嘅開支，你嘅 Summary 就會喺度出現。</p>';return}
+  const A=analyse(s,inc),ins=val("need","個人保險")+val("need","家人保險"),pf=prof();
+  REFL[2].el.textContent=REFL[2].q+(pf.age>=10&&pf.age<65?" 你而家 "+pf.age+" 歲，距離 65 歲仲有 "+(65-pf.age)+" 年。":"");
+  const esc=t=>String(t).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  const tile=(k,n,p,txt)=>'<div class="tile '+k+'"><div class="tl"><span>'+n+'</span><b>'+p+'%</b></div><div class="tm">'+fmt(s[k])+'</div><p>'+esc(txt)+'</p></div>';
+  const ig=CONTACT.ig?"https://instagram.com/"+CONTACT.ig:"";
+  let extra="";
+  if(inc)extra='<p class="small">'+(inc>=s.total?"以你輸入嘅收入計，每月仲剩 <b>"+fmt(inc-s.total)+"</b>。":"你嘅開支高過收入 <b>"+fmt(s.total-inc)+"</b>，值得停一停檢視下。")+(ins?"保險佔收入 "+pct(ins,inc)+"%。":"")+"</p>";
+  const who=[pf.name,pf.age?pf.age+" 歲":"",pf.job].filter(Boolean).map(esc).join(" · ");
+  const warn=A.warns.length
+    ?'<div class="warn" role="alert"><h4>⚠️ 警號：呢 '+A.warns.length+' 樣會變成風險</h4>'+A.warns.map(w=>'<div class="wi"><b>'+esc(w.t)+'</b><span>'+esc(w.d)+'</span></div>').join("")+'</div>'
+    :'<p class="okbar">✅ 保障同退休儲蓄都有預留，繼續保持，定期檢視就得。</p>';
+  box.innerHTML=
+    (who?'<p class="who"><b>'+who+'</b></p>':'')+
+    '<div class="verdict"><div class="score"><b>'+A.score+'</b><span>/100 底氣指數</span></div><div><h3>'+esc(A.verdict)+'</h3><p>'+esc(A.sub)+'</p></div></div>'+
+    love(A,pf)+
+    warn+
+    '<div class="tiles">'+tile("need","必需",A.np,A.need)+tile("want","非必需",A.wp,A.want)+tile("future","Future",A.fp,A.fut)+'</div>'+
+    '<div class="review"><h4>Wendy 點評</h4>'+
+      '<div class="rv ok"><em>最叻</em><span>'+esc(A.strongTxt)+'</span></div>'+
+      (A.gapTxt?'<div class="rv no"><em>最急要補</em><span>'+esc(A.gapTxt)+'。'+esc(A.gapTip)+'</span></div>':'')+
+      '<div class="rv go"><em>今個月做</em><span>'+esc(A.next)+'</span></div>'+
+    '</div>'+extra+
+    '<div class="sumcta"><b>有需要，歡迎 DM Wendy ✨</b><span>Follow IG 會知道更多理財保險嘅知識。</span>'+(CONTACT.ig?'<a href="https://ig.me/m/'+CONTACT.ig+'" target="_blank" rel="noopener">DM Wendy →</a>':'')+'</div>'+
+    '<p class="close">知道自己使幾多，先可以更加 manage 錢。</p>';
+}
+
+(function(){
+  const b=$("ctabtns");
+  if(CONTACT.ig){
+    const d=document.createElement("a");d.href="https://ig.me/m/"+CONTACT.ig;d.target="_blank";d.rel="noopener";d.textContent="💬 DM Wendy";b.appendChild(d);
+    const f=document.createElement("a");f.href="https://instagram.com/"+CONTACT.ig;f.target="_blank";f.rel="noopener";f.className="alt";f.textContent="Follow IG @"+CONTACT.ig;b.appendChild(f);
+  }else{const x=document.createElement("span");x.textContent="喺 IG 搵 Wendy";b.appendChild(x)}
+})();
+
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function wrapText(c,text,x,y,maxW,lh){
+  let line="",yy=y;
+  for(const ch of text){
+    if(c.measureText(line+ch).width>maxW&&line){c.fillText(line,x,yy);line=ch;yy+=lh}else line+=ch;
+  }
+  c.fillText(line,x,yy);return yy;
+}
+async function makeCard(){
+  try{await Promise.all([document.fonts.load('900 60px "Noto Serif HK"'),document.fonts.load('700 30px "Noto Sans HK"'),document.fonts.load('400 30px "Noto Sans HK"')])}catch(e){}
+  const K=SKINS[SKIN],W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;
+  const c=cv.getContext("2d"),s=sums(),A=analyse(s,num($("income").value)),SANS='"Noto Sans HK","PingFang HK",sans-serif',SERIF='"Noto Serif HK","Songti TC",serif';
+  const INK=K.ink,MUT=K.muted;
+  const clear=(()=>{const h=K.bg.replace("#","");return "rgba("+parseInt(h.slice(0,2),16)+","+parseInt(h.slice(2,4),16)+","+parseInt(h.slice(4,6),16)+",0)"})();
+  c.fillStyle=K.bg;c.fillRect(0,0,W,H);
+  [[960,80,520,K.glow1],[60,700,520,K.glow2],[980,1350,480,K.glow3]].forEach(([x,y,r,col])=>{
+    const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col);g.addColorStop(1,clear);c.fillStyle=g;c.fillRect(0,0,W,H);
+  });
+  c.textBaseline="alphabetic";
+  c.fillStyle=K.futureBg;rr(c,80,90,230,56,28);c.fill();
+  c.fillStyle=K.future;c.font="700 28px "+SANS;c.fillText("底氣預算表",108,128);
+  c.fillStyle=INK;c.font="900 64px "+SERIF;c.fillText("我嘅每月理財 Summary",80,236);
+  const pf=prof(),d=new Date(),who=[pf.name,pf.age?pf.age+"歲":"",pf.job].filter(Boolean).join(" · ");
+  c.fillStyle=INK;c.font="700 32px "+SANS;c.fillText(who,80,292);
+  c.fillStyle=MUT;c.font="400 28px "+SANS;c.textAlign="right";c.fillText(d.getFullYear()+"."+(d.getMonth()+1)+"."+d.getDate(),1000,292);c.textAlign="left";
+  c.fillStyle=MUT;c.font="500 32px "+SANS;c.fillText("每月總轉出",80,372);
+  c.fillStyle=INK;c.font="900 130px "+SERIF;c.fillText(fmt(s.total),76,498);
+  c.fillStyle=K.want;c.font="500 27px "+SANS;c.fillText("💛 你肯睇清楚自己每月使幾多，已經贏咗好多人",80,546);
+  const cx=230,cy=700,R=120,TH=46,cols={need:K.need,want:K.want,future:K.future};
+  c.lineWidth=TH;c.strokeStyle=K.line;c.beginPath();c.arc(cx,cy,R,0,Math.PI*2);c.stroke();
+  let a0=-Math.PI/2;
+  if(s.total)["need","want","future"].forEach(k=>{const e=s[k]/s.total*Math.PI*2;if(e>0){c.strokeStyle=cols[k];c.beginPath();c.arc(cx,cy,R,a0,a0+e);c.stroke();a0+=e}});
+  [["need","必需"],["want","非必需"],["future","Future"]].forEach(([k,n],i)=>{
+    const y=636+i*92;
+    c.fillStyle=cols[k];c.beginPath();c.arc(470,y-12,14,0,Math.PI*2);c.fill();
+    c.fillStyle=INK;c.font="700 36px "+SANS;c.fillText(n+" "+pct(s[k],s.total)+"%",500,y);
+    c.fillStyle=MUT;c.font="400 32px "+SANS;c.fillText(fmt(s[k]),500,y+42);
+  });
+  const vy=890,vh=300;
+  const g=c.createLinearGradient(80,vy,1000,vy+vh);g.addColorStop(0,K.panel1);g.addColorStop(1,K.panel2);
+  c.fillStyle=g;rr(c,80,vy,920,vh,32);c.fill();
+  c.fillStyle=K.onPanel;c.textAlign="center";c.font="900 128px "+SERIF;c.fillText(String(A.score),240,vy+160);
+  c.globalAlpha=.75;c.font="500 26px "+SANS;c.fillText("/100 底氣指數",240,vy+206);c.globalAlpha=1;c.textAlign="left";
+  c.fillStyle=K.onPanel;c.font="900 40px "+SERIF;
+  let yy=wrapText(c,A.verdict,400,vy+78,560,52);
+  if(A.warns.length){c.fillStyle=K.hot;c.font="700 27px "+SANS;yy=wrapText(c,"⚠️ 警號："+A.warns.map(w=>w.t).join("、"),400,yy+56,560,38)}
+  else{c.font="400 27px "+SANS;c.fillStyle=K.onPanel;yy=wrapText(c,A.gapTxt?"最急要補："+A.gapTxt:"最叻："+A.strongTxt,400,yy+56,560,38)}
+  c.fillStyle=K.gold;c.font="700 27px "+SANS;
+  wrapText(c,"今個月做："+A.next,400,yy+52,560,38);
+  c.fillStyle=INK;c.font="900 44px "+SERIF;c.fillText("理財反思五問",80,1252);
+  REFL.forEach((r,i)=>{
+    const y=1276+i*80,st=STATE[i],col=st==null?K.muted:LV[st][2],lab=st==null?"未揀":(r.opts||LV)[st][0];
+    c.fillStyle=K.card;rr(c,80,y,920,66,20);c.fill();
+    c.fillStyle=INK;c.font="500 30px "+SANS;c.fillText(r.e+" "+(i+1)+". "+r.short,108,y+43);
+    const bw=170;c.fillStyle=col;rr(c,1000-bw-12,y+9,bw,48,24);c.fill();
+    c.fillStyle="#FFFFFF";c.font="700 26px "+SANS;c.textAlign="center";c.fillText(lab,1000-bw/2-12,y+42);c.textAlign="left";
+  });
+  const g2=c.createLinearGradient(80,1690,1000,1840);g2.addColorStop(0,K.panel1);g2.addColorStop(1,K.panel2);
+  c.fillStyle=g2;rr(c,80,1690,920,150,30);c.fill();
+  c.fillStyle=K.onPanel;c.font="900 42px "+SERIF;c.fillText("活得更有底氣",116,1752);
+  c.font="400 28px "+SANS;
+  wrapText(c,"有需要歡迎 DM Wendy ✨ Follow IG"+(CONTACT.ig?" @"+CONTACT.ig:"")+" 睇更多理財保險知識。",116,1800,820,38);
+  c.fillStyle=MUT;c.font="400 22px "+SANS;c.fillText("只供個人理財參考，唔構成任何保險或投資建議。",80,1885);
+  return new Promise(res=>cv.toBlob(res,"image/png"));
+}
+$("dl").onclick=async()=>{
+  const m=$("dmsg");
+  if(!profOK()){m.textContent="請先喺上面填好名、歲數（10 至 100）同工作。";$("pname").scrollIntoView({block:"center"});return}
+  if(!sums().total){m.textContent="請先填入你嘅開支，再下載 Summary。";return}
+  $("dl").disabled=true;m.textContent="砌緊你嘅 Summary 圖…";
+  try{
+    const blob=await makeCard();
+    let dls=null;
+    try{if(window.claude&&claude.use)dls=await claude.use("downloads")}catch(e){}
+    if(!dls){
+      const p=$("prev");if(p.dataset.u)URL.revokeObjectURL(p.dataset.u);p.dataset.u=URL.createObjectURL(blob);p.src=p.dataset.u;p.hidden=false;
+      try{const a=document.createElement("a");a.href=p.dataset.u;a.download="我嘅每月理財Summary.png";document.body.appendChild(a);a.click();a.remove()}catch(e){}
+      m.textContent="已經幫你下載。如果冇反應，長按下面張圖就可以儲存。";return}
+    await dls.save({filename:"我嘅每月理財Summary.png",data:blob});
+    m.textContent="已儲存，記得 tag 我分享你嘅反思！";
+  }catch(e){
+    m.textContent=(e&&e.code==="declined")?"已取消下載。":"下載唔成功，請稍後再試。";
+  }finally{$("dl").disabled=false}
+};
+
+calc();
+</script>
+</body>
+</html>
